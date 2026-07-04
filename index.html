@@ -347,22 +347,17 @@
         .btn-call.call-start {
             background: var(--green);
             color: #000;
-            box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3);
-            animation: btn-glow-green 2.6s ease-in-out infinite;
+            box-shadow: 0 10px 28px rgba(0, 232, 122, 0.3);
+            /* SIN ANIMACIÓN DE ONDA */
         }
         .btn-call.call-start:hover {
-            box-shadow: 0 0 0 12px var(--green-dim), 0 14px 36px rgba(0, 232, 122, 0.45);
+            box-shadow: 0 14px 36px rgba(0, 232, 122, 0.45);
             transform: scale(1.07);
-        }
-        @keyframes btn-glow-green {
-            0%, 100% { box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3); }
-            50% { box-shadow: 0 0 0 14px rgba(0, 232, 122, 0), 0 10px 28px rgba(0, 232, 122, 0.4); }
         }
         .btn-call.call-end {
             background: var(--red);
             color: #fff;
             box-shadow: 0 10px 28px var(--red-glow);
-            animation: none;
         }
         .btn-call.call-end:hover {
             box-shadow: 0 14px 36px rgba(255, 59, 92, 0.5);
@@ -403,6 +398,21 @@
             z-index: -1 !important;
         }
 
+        /* Indicador de versión */
+        .version-tag {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--muted);
+            background: var(--surface3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            z-index: 2;
+        }
+
         @media (max-width: 480px) {
             .card { max-width: 100%; border-radius: 14px; }
             .card-body { padding: 20px 16px; gap: 16px; }
@@ -419,6 +429,9 @@
     </div>
 
     <div class="card">
+        <!-- Indicador de versión -->
+        <span class="version-tag">v4</span>
+
         <div class="card-header">
             <div class="card-header-left">
                 <img src="images/logo.png" alt="Sermicro" class="logo-img">
@@ -491,8 +504,8 @@
             let callActive = false;
             let timerInterval = null;
             let seconds = 0;
-            let widgetReady = false;
             let widget = null;
+            let widgetReady = false;
 
             const callBtn = document.getElementById('callBtn');
             const btnLabel = document.getElementById('btnLabel');
@@ -534,6 +547,7 @@
                     seconds++;
                     timerDisplay.textContent = formatTime(seconds);
                 }, 1000);
+                callActive = true;
             }
 
             function resetUI() {
@@ -552,27 +566,33 @@
             }
 
             function startCall() {
-                if (callActive || !widgetReady) return;
+                if (callActive || !widgetReady || !widget) {
+                    console.warn('No se puede iniciar: callActive=' + callActive + ', widgetReady=' + widgetReady);
+                    return;
+                }
                 try {
-                    // El método estándar del widget
                     if (typeof widget.startCall === 'function') {
                         widget.startCall();
+                        updateUIForCall();
+                        // El evento 'convai:call-started' nos pondrá en "conectado"
                     } else {
-                        // Fallback: intentar clic en el botón del shadow DOMm
+                        // Fallback: buscar botón en el shadow DOM
                         const shadowBtn = widget.shadowRoot && widget.shadowRoot.querySelector('button');
-                        if (shadowBtn) shadowBtn.click();
-                        else throw new Error('No se puede iniciar llamada');
+                        if (shadowBtn) {
+                            shadowBtn.click();
+                            updateUIForCall();
+                        } else {
+                            throw new Error('No se encontró método startCall ni botón en el shadow DOM');
+                        }
                     }
-                    updateUIForCall();
-                    // La UI se actualiza a "conectado" cuando recibamos evento del widget
                 } catch (e) {
                     console.error('Error al iniciar llamada:', e);
-                    alert('No se pudo iniciar la llamada. Asegúrate de que el agente está activo.');
+                    alert('No se pudo iniciar la llamada. Revisa la consola.');
                 }
             }
 
             function endCall() {
-                if (!callActive || !widgetReady) return;
+                if (!callActive || !widgetReady || !widget) return;
                 try {
                     if (typeof widget.endCall === 'function') {
                         widget.endCall();
@@ -587,49 +607,68 @@
                 }
             }
 
-            function toggleCall() {
+            window.toggleCall = function() {
                 if (callActive) {
                     endCall();
                 } else {
                     startCall();
                 }
-            }
+            };
 
-            // Esperar a que el widget esté listo
-            function waitForWidget() {
-                widget = document.getElementById('elWidget');
-                if (!widget) return setTimeout(waitForWidget, 100);
+            // Inicialización robusta: esperar a que el elemento esté definido y listo
+            async function initWidget() {
+                try {
+                    // Esperar a que el custom element esté registrado
+                    await customElements.whenDefined('elevenlabs-convai');
+                    console.log('✅ Elemento elevenlabs-convai definido');
 
-                // El widget puede tardar en inicializarse
-                function checkReady() {
-                    // El widget está listo si ya tiene el shadowRoot y algún botón o si expone startCall
-                    if (widget.shadowRoot || typeof widget.startCall === 'function') {
-                        widgetReady = true;
-                        console.log('✅ Widget de ElevenLabs listo para usarse');
-                        // Escuchar eventos de conexión/desconexión del widget (personalizados)
-                        widget.addEventListener('elevenlabs-convai:call-started', () => {
-                            updateUIForConnected();
-                            callActive = true;
-                        });
-                        widget.addEventListener('elevenlabs-convai:call-ended', () => {
-                            resetUI();
-                        });
-                        return;
+                    widget = document.getElementById('elWidget');
+                    if (!widget) {
+                        throw new Error('No se encontró el elemento #elWidget');
                     }
-                    setTimeout(checkReady, 200);
+
+                    // Esperar a que el shadow DOM esté listo (a veces tarda unos ms)
+                    await new Promise((resolve) => {
+                        const check = () => {
+                            if (widget.shadowRoot || typeof widget.startCall === 'function') {
+                                resolve();
+                            } else {
+                                setTimeout(check, 100);
+                            }
+                        };
+                        check();
+                    });
+
+                    widgetReady = true;
+                    console.log('✅ Widget listo con métodos:', typeof widget.startCall, typeof widget.endCall);
+
+                    // Escuchar eventos de la llamada (nombre exacto del evento de ElevenLabs)
+                    widget.addEventListener('convai:call-started', () => {
+                        console.log('📞 Llamada iniciada');
+                        updateUIForConnected();
+                    });
+                    widget.addEventListener('convai:call-ended', () => {
+                        console.log('🔚 Llamada finalizada');
+                        resetUI();
+                    });
+                    // Eventos alternativos por si acaso
+                    widget.addEventListener('elevenlabs-convai:call-started', () => {
+                        console.log('📞 Llamada iniciada (alt)');
+                        updateUIForConnected();
+                    });
+                    widget.addEventListener('elevenlabs-convai:call-ended', () => {
+                        console.log('🔚 Llamada finalizada (alt)');
+                        resetUI();
+                    });
+
+                } catch (err) {
+                    console.error('Error inicializando el widget:', err);
+                    alert('El widget de voz no se ha cargado correctamente. Recarga la página.');
                 }
-                checkReady();
             }
 
-            // Arrancar la espera cuando el script del widget se haya cargado
-            if (document.readyState === 'complete') {
-                waitForWidget();
-            } else {
-                window.addEventListener('load', waitForWidget);
-            }
-
-            // Exponer toggleCall global
-            window.toggleCall = toggleCall;
+            // Iniciar la inicialización
+            initWidget();
 
             // Simulación de tickets
             setInterval(() => {
@@ -638,7 +677,6 @@
                 }
             }, 15000);
 
-            // Inicializar tickets
             ticketCount.textContent = randomTickets();
         })();
     </script>
