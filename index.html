@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAU · Sermicro Soporte IT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #06080d;
@@ -277,6 +275,7 @@
             background: var(--subtle);
             transition: all 0.3s ease;
         }
+        /* CORREGIDO: selectores sin corchetes */
         .dot.online { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
         .dot.calling { background: var(--amber); box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); animation: blink-dot 0.8s ease-in-out infinite; }
         .dot.connected { background: var(--green); box-shadow: 0 0 10px var(--green-glow); }
@@ -344,11 +343,11 @@
             user-select: none;
         }
         .btn-call:active { transform: scale(0.94); }
+        /* CORREGIDO: selectores sin corchetes */
         .btn-call.call-start {
             background: var(--green);
             color: #000;
             box-shadow: 0 10px 28px rgba(0, 232, 122, 0.3);
-            /* SIN ANIMACIÓN DE ONDA */
         }
         .btn-call.call-start:hover {
             box-shadow: 0 14px 36px rgba(0, 232, 122, 0.45);
@@ -386,7 +385,6 @@
         }
         .card-footer .footer-brand { color: var(--muted); font-weight: 500; }
 
-        /* Versión tag */
         .version-tag {
             position: absolute;
             top: 8px;
@@ -410,14 +408,13 @@
     </style>
 </head>
 <body>
-
     <div class="bg-particles">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
     <div class="card">
-        <span class="version-tag">v6</span>
+        <span class="version-tag">v8</span>
 
         <div class="card-header">
             <div class="card-header-left">
@@ -482,15 +479,12 @@
         </div>
     </div>
 
-    <!-- SDK de ElevenLabs (sin widget embebido) -->
     <script type="module">
         import { ElevenLabsClient } from 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@latest/dist/elevenlabs-client.esm.js';
 
-        // Configuración
         const API_KEY = 'sk_fdc782ab040fd94ebadf797817f37a195b22218e27c4d98b';
         const AGENT_ID = 'agent_0701kwn0q915ew78vgnfc75bnn46';
 
-        // Estado
         let client;
         let conversation;
         let callActive = false;
@@ -498,7 +492,6 @@
         let seconds = 0;
         let audioStream = null;
 
-        // Elementos UI
         const callBtn = document.getElementById('callBtn');
         const btnLabel = document.getElementById('btnLabel');
         const statusDot = document.getElementById('statusDot');
@@ -507,7 +500,6 @@
         const timerDisplay = document.getElementById('timerDisplay');
         const ticketCount = document.getElementById('ticketCount');
 
-        // Utilidades
         function formatTime(s) {
             const m = Math.floor(s / 60).toString().padStart(2, '0');
             const sc = (s % 60).toString().padStart(2, '0');
@@ -518,7 +510,6 @@
             return Math.floor(Math.random() * 30) + 30;
         }
 
-        // UI states
         function updateUIForCall() {
             callBtn.className = 'btn-call call-end';
             callBtn.textContent = '📵';
@@ -565,16 +556,13 @@
             }
         }
 
-        // Iniciar conversación
         async function startCall() {
             if (callActive) return;
             if (!client) {
                 alert('Error: Cliente de ElevenLabs no inicializado. Recarga la página.');
                 return;
             }
-
             updateUIForCall();
-
             try {
                 audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 console.log('✅ Micrófono concedido');
@@ -609,7 +597,6 @@
             }
         }
 
-        // Finalizar llamada
         async function endCall() {
             if (!callActive || !conversation) return;
             try {
@@ -625,16 +612,17 @@
             resetUI();
         }
 
-        // ***** CORRECCIÓN PRINCIPAL: Vinculamos el evento click directamente al botón *****
-        callBtn.addEventListener('click', () => {
+        function toggleCall() {
             if (callActive) {
                 endCall();
             } else {
                 startCall();
             }
-        });
+        }
 
-        // Inicializar el cliente de ElevenLabs
+        /* CORREGIDO: event listener añadidssssso */
+        callBtn.addEventListener('click', toggleCall);
+
         try {
             client = new ElevenLabsClient({ apiKey: API_KEY });
             console.log('✅ ElevenLabs Client inicializado');
@@ -643,7 +631,6 @@
             alert('No se pudo conectar con ElevenLabs. Revisa la API Key.');
         }
 
-        // Tickets aleatorios
         setInterval(() => {
             if (!callActive && Math.random() < 0.3) {
                 ticketCount.textContent = randomTickets();
