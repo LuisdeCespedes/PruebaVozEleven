@@ -63,7 +63,6 @@
                 radial-gradient(ellipse at 50% 80%, rgba(0, 150, 200, 0.02) 0%, transparent 60%);
         }
 
-        /* Grid sutil de fondo */
         body::after {
             content: '';
             position: fixed;
@@ -76,7 +75,6 @@
             z-index: 0;
         }
 
-        /* Partículas sutiles (solo decoración) */
         .bg-particles {
             position: fixed;
             inset: 0;
@@ -93,65 +91,22 @@
             animation: float-up 8s infinite ease-in;
             opacity: 0;
         }
-        .bg-particles span:nth-child(1) {
-            left: 10%;
-            animation-delay: 0s;
-            animation-duration: 9s;
-        }
-        .bg-particles span:nth-child(2) {
-            left: 25%;
-            animation-delay: 2s;
-            animation-duration: 11s;
-        }
-        .bg-particles span:nth-child(3) {
-            left: 40%;
-            animation-delay: 4s;
-            animation-duration: 7s;
-        }
-        .bg-particles span:nth-child(4) {
-            left: 55%;
-            animation-delay: 1s;
-            animation-duration: 10s;
-        }
-        .bg-particles span:nth-child(5) {
-            left: 70%;
-            animation-delay: 3s;
-            animation-duration: 8s;
-        }
-        .bg-particles span:nth-child(6) {
-            left: 85%;
-            animation-delay: 5s;
-            animation-duration: 12s;
-        }
-        .bg-particles span:nth-child(7) {
-            left: 15%;
-            animation-delay: 6s;
-            animation-duration: 9s;
-        }
-        .bg-particles span:nth-child(8) {
-            left: 60%;
-            animation-delay: 7s;
-            animation-duration: 11s;
-        }
+        .bg-particles span:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 9s; }
+        .bg-particles span:nth-child(2) { left: 25%; animation-delay: 2s; animation-duration: 11s; }
+        .bg-particles span:nth-child(3) { left: 40%; animation-delay: 4s; animation-duration: 7s; }
+        .bg-particles span:nth-child(4) { left: 55%; animation-delay: 1s; animation-duration: 10s; }
+        .bg-particles span:nth-child(5) { left: 70%; animation-delay: 3s; animation-duration: 8s; }
+        .bg-particles span:nth-child(6) { left: 85%; animation-delay: 5s; animation-duration: 12s; }
+        .bg-particles span:nth-child(7) { left: 15%; animation-delay: 6s; animation-duration: 9s; }
+        .bg-particles span:nth-child(8) { left: 60%; animation-delay: 7s; animation-duration: 11s; }
 
         @keyframes float-up {
-            0% {
-                transform: translateY(105vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.7;
-            }
-            90% {
-                opacity: 0.2;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1.5);
-                opacity: 0;
-            }
+            0% { transform: translateY(105vh) scale(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
-        /* Tarjeta principal */
         .card {
             position: relative;
             z-index: 1;
@@ -170,7 +125,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .card-header {
             display: flex;
             align-items: center;
@@ -184,30 +138,11 @@
             align-items: center;
             gap: 10px;
         }
-        .logo-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            color: var(--text);
-            text-transform: uppercase;
-        }
-        .logo-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green-glow);
-            animation: logo-pulse 2s ease-in-out infinite;
-        }
-        @keyframes logo-pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 6px var(--green-glow);
-            }
-            50% {
-                box-shadow: 0 0 16px var(--green), 0 0 24px var(--green-glow);
-            }
+        .logo-img {
+            height: 28px;
+            width: auto;
+            opacity: 0.9;
+            filter: brightness(0) invert(1);
         }
         .badge-cau {
             font-family: 'JetBrains Mono', monospace;
@@ -221,7 +156,6 @@
             border: 1px solid rgba(0, 232, 122, 0.2);
         }
 
-        /* Cuerpo */
         .card-body {
             padding: 28px 24px;
             display: flex;
@@ -230,7 +164,6 @@
             gap: 22px;
         }
 
-        /* Avatar */
         .avatar-section {
             display: flex;
             flex-direction: column;
@@ -269,25 +202,12 @@
             inset: -6px;
         }
         @keyframes pulse-ring {
-            0% {
-                transform: scale(0.85);
-                opacity: 0.6;
-            }
-            100% {
-                transform: scale(1.55);
-                opacity: 0;
-            }
+            0% { transform: scale(0.85); opacity: 0.6; }
+            100% { transform: scale(1.55); opacity: 0; }
         }
         @keyframes breathe-ring {
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.2;
-            }
-            50% {
-                transform: scale(1.06);
-                opacity: 0.45;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.06); opacity: 0.45; }
         }
         .avatar-inner {
             width: 100px;
@@ -331,7 +251,6 @@
             margin-top: -2px;
         }
 
-        /* Barra de estado */
         .status-bar {
             width: 100%;
             background: var(--surface3);
@@ -358,31 +277,13 @@
             background: var(--subtle);
             transition: all 0.3s ease;
         }
-        .dot.online {
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green-glow);
-        }
-        .dot.calling {
-            background: var(--amber);
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-            animation: blink-dot 0.8s ease-in-out infinite;
-        }
-        .dot.connected {
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green-glow);
-        }
-        .dot.ended {
-            background: var(--red);
-            box-shadow: 0 0 6px var(--red-glow);
-        }
+        .dot.online { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+        .dot.calling { background: var(--amber); box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); animation: blink-dot 0.8s ease-in-out infinite; }
+        .dot.connected { background: var(--green); box-shadow: 0 0 10px var(--green-glow); }
+        .dot.ended { background: var(--red); box-shadow: 0 0 6px var(--red-glow); }
         @keyframes blink-dot {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.2;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
         }
         .timer-display {
             color: var(--text-secondary);
@@ -392,7 +293,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Info rows */
         .info-grid {
             width: 100%;
             display: grid;
@@ -421,7 +321,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Botón de llamada */
         .call-btn-wrapper {
             display: flex;
             flex-direction: column;
@@ -444,9 +343,7 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
-        .btn-call:active {
-            transform: scale(0.94);
-        }
+        .btn-call:active { transform: scale(0.94); }
         .btn-call.call-start {
             background: var(--green);
             color: #000;
@@ -458,13 +355,8 @@
             transform: scale(1.07);
         }
         @keyframes btn-glow-green {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 0 14px rgba(0, 232, 122, 0), 0 10px 28px rgba(0, 232, 122, 0.4);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3); }
+            50% { box-shadow: 0 0 0 14px rgba(0, 232, 122, 0), 0 10px 28px rgba(0, 232, 122, 0.4); }
         }
         .btn-call.call-end {
             background: var(--red);
@@ -484,11 +376,8 @@
             font-family: 'JetBrains Mono', monospace;
             transition: color 0.3s;
         }
-        .btn-label.active {
-            color: var(--red);
-        }
+        .btn-label.active { color: var(--red); }
 
-        /* Footer */
         .card-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--border);
@@ -500,76 +389,33 @@
             letter-spacing: 0.6px;
             line-height: 1.7;
         }
-        .card-footer .footer-brand {
-            color: var(--muted);
-            font-weight: 500;
-        }
+        .card-footer .footer-brand { color: var(--muted); font-weight: 500; }
 
-        /* ---- Widget de ElevenLabs: oculto pero funcional ---- */
-        #elWidget {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 1px !important;
-            height: 1px !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            overflow: hidden !important;
-            clip: rect(0, 0, 0, 0) !important;
-            clip-path: inset(50%) !important;
-            z-index: -9999 !important;
-            border: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            display: block !important;
-            /* no usamos display:none para que el navegador lo mantenga "vivo" y el audio funcione */
-        }
-
-        /* Responsive */
         @media (max-width: 480px) {
-            .card {
-                max-width: 100%;
-                border-radius: 14px;
-            }
-            .card-body {
-                padding: 20px 16px;
-                gap: 16px;
-            }
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .btn-call {
-                width: 62px;
-                height: 62px;
-                font-size: 1.4rem;
-            }
+            .card { max-width: 100%; border-radius: 14px; }
+            .card-body { padding: 20px 16px; gap: 16px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .btn-call { width: 62px; height: 62px; font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Partículas decorativas de fondo -->
     <div class="bg-particles">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
-    <!-- Tarjeta principal del CAU -->
     <div class="card">
-
-        <!-- Header -->
         <div class="card-header">
             <div class="card-header-left">
-                <span class="logo-text">SERMICRO</span>
-                <span class="logo-dot"></span>
+                <!-- LOGO DE SERMICRO: usa la imagen que ya tienes -->
+                <img src="images/logo.png" alt="Sermicro" class="logo-img">
             </div>
             <span class="badge-cau">CAU · N1</span>
         </div>
 
-        <!-- Cuerpo -->
         <div class="card-body">
-
-            <!-- Avatar -->
             <div class="avatar-section">
                 <div class="avatar-outer-ring" id="avatarRing">
                     <div class="avatar-inner">
@@ -582,7 +428,6 @@
                 </div>
             </div>
 
-            <!-- Barra de estado -->
             <div class="status-bar">
                 <div class="status-left">
                     <span class="dot online" id="statusDot"></span>
@@ -591,7 +436,6 @@
                 <span class="timer-display" id="timerDisplay">--:--</span>
             </div>
 
-            <!-- Info grid -->
             <div class="info-grid">
                 <div class="info-cell">
                     <span class="info-label">Departamento</span>
@@ -611,57 +455,37 @@
                 </div>
             </div>
 
-            <!-- Botón de llamada -->
             <div class="call-btn-wrapper">
-                <button
-                class="btn-call call-start"
-                id="callBtn"
-                onclick="toggleCall()"
-                title="Iniciar llamada con LUZ IA"
-                aria-label="Iniciar llamada"
-            >
-            📞
-        </button>
-        <span class="btn-label" id="btnLabel">Iniciar llamada</span>
+                <button class="btn-call call-start" id="callBtn" onclick="toggleCall()" title="Iniciar llamada con LUZ IA" aria-label="Iniciar llamada">
+                    📞
+                </button>
+                <span class="btn-label" id="btnLabel">Iniciar llamada</span>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <p>
+                Tu llamada puede ser grabada con fines de calidad.<br>
+                <span class="footer-brand">Powered by Sermicro AI</span> · sermicro.com
+            </p>
+        </div>
     </div>
 
-</div>
+    <!-- SDK de ElevenLabs (sin widget embebido) -->
+    <script type="module">
+        import { ElevenLabsClient } from 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@latest/dist/elevenlabs-client.esm.js';
 
-<!-- Footer -->
-<div class="card-footer">
-    <p>
-        Tu llamada puede ser grabada con fines de calidad.<br>
-        <span class="footer-brand">Powered by Sermicro AI</span> · sermicro.com
-    </p>
-</div>
-</div>
+        // ⚠️ SUSTITUYE ESTO CON TU API KEY DE ELEVENLABS
+        const ELEVENLABS_API_KEY = 'TU_API_KEY_AQUÍ';
+        const AGENT_ID = 'agent_0701kwn0q915ew78vgnfc75bnn46';
 
-<!-- ============================================ -->
-<!-- WIDGET DE ELEVENLABS (oculto, solo funcional) -->
-<!-- ============================================ -->
-<elevenlabs-convai
-agent-id="agent_0701kwn0q915ew78vgnfc75bnn46"
-id="elWidget"
-></elevenlabs-convai>
-<script
-src="https://unpkg.com/@elevenlabs/convai-widget-embed"
-async
-type="text/javascript"
-></script>
-
-<script>
-    (function() {
-        // ────────────────────────────────────────
-        // ESTADO
-        // ────────────────────────────────────────
+        let client;
+        let conversation;
         let callActive = false;
         let timerInterval = null;
         let seconds = 0;
-        let widgetReady = false;
 
-        // ────────────────────────────────────────
-        // REFERENCIAS AL DOM
-        // ────────────────────────────────────────
+        // Elementos UI
         const callBtn = document.getElementById('callBtn');
         const btnLabel = document.getElementById('btnLabel');
         const statusDot = document.getElementById('statusDot');
@@ -669,11 +493,7 @@ type="text/javascript"
         const avatarRing = document.getElementById('avatarRing');
         const timerDisplay = document.getElementById('timerDisplay');
         const ticketCount = document.getElementById('ticketCount');
-        const widget = document.getElementById('elWidget');
 
-        // ────────────────────────────────────────
-        // UTILIDADES
-        // ────────────────────────────────────────
         function formatTime(s) {
             const m = Math.floor(s / 60).toString().padStart(2, '0');
             const sc = (s % 60).toString().padStart(2, '0');
@@ -684,86 +504,7 @@ type="text/javascript"
             return Math.floor(Math.random() * 30) + 30;
         }
 
-        /**
-         * Busca el botón dentro del shadow DOM del widget.
-         * El widget de ElevenLabs suele tener un <button> en su shadow root.
-         * Intentamos varios selectores para ser robustos.
-         */
-        function findWidgetButton() {
-            if (!widget || !widget.shadowRoot) return null;
-            // Intentamos selectores comunes
-            const selectors = [
-                'button',
-                '[role="button"]',
-                '.start-call-btn',
-                '[data-testid="call-button"]',
-                'button[aria-label]',
-            ];
-            for (const sel of selectors) {
-                const btn = widget.shadowRoot.querySelector(sel);
-                if (btn) return btn;
-            }
-            // Si no encontramos nada, buscamos cualquier elemento clickeablee
-            const allButtons = widget.shadowRoot.querySelectorAll('button, [role="button"]');
-            if (allButtons.length > 0) return allButtons[0];
-            return null;
-        }
-
-        /**
-         * Hace clic en el botón interno del widget para iniciar/terminar la llamada.
-         * Retorna true si pudo hacer clic, false si no.
-         */
-        function clickWidgetButton() {
-            const btn = findWidgetButton();
-            if (btn) {
-                btn.click();
-                console.log('✅ Clic en botón del widget de ElevenLabs');
-                return true;
-            }
-            console.warn('⚠️ No se encontró el botón del widget en el shadow DOM');
-            return false;
-        }
-
-        /**
-         * Espera a que el widget esté listo (custom element definido y shadow DOM accesible).
-         */
-        function waitForWidget(timeoutMs = 8000) {
-            return new Promise((resolve, reject) => {
-                const startTime = Date.now();
-
-                function check() {
-                    // ¿Está definido el custom element?
-                    if (!customElements.get('elevenlabs-convai') && Date.now() - startTime < timeoutMs) {
-                        setTimeout(check, 200);
-                        return;
-                    }
-                    // ¿Tiene shadowRoot?
-                    if (widget && widget.shadowRoot) {
-                        widgetReady = true;
-                        console.log('✅ Widget de ElevenLabs listo');
-                        resolve(true);
-                        return;
-                    }
-                    if (Date.now() - startTime >= timeoutMs) {
-                        console.warn('⚠️ Timeout esperando al widget de ElevenLabs');
-                        reject(new Error('Timeout esperando al widget'));
-                        return;
-                    }
-                    setTimeout(check, 200);
-                }
-                check();
-            });
-        }
-
-        // ────────────────────────────────────────
-        // INICIAR / TERMINAR LLAMADA
-        // ────────────────────────────────────────
-        function startCall() {
-            if (callActive) return;
-
-            callActive = true;
-
-            // Actualizar UI a estado "conectando"
+        function updateUIForCall() {
             callBtn.className = 'btn-call call-end';
             callBtn.textContent = '📵';
             btnLabel.textContent = 'Colgar llamada';
@@ -773,61 +514,18 @@ type="text/javascript"
             avatarRing.className = 'avatar-outer-ring calling';
             timerDisplay.textContent = '--:--';
             ticketCount.textContent = randomTickets();
-
-            // Permitir interacción con el widget momentáneamente para el clic
-            const prevPointerEvents = widget.style.pointerEvents;
-            const prevZIndex = widget.style.zIndex;
-            widget.style.pointerEvents = 'auto';
-            widget.style.zIndex = '99999';
-
-            // Pequeño delay para que el widget procese
-            setTimeout(() => {
-                const clicked = clickWidgetButton();
-
-                // Restaurar ocultación del widget
-                setTimeout(() => {
-                    widget.style.pointerEvents = prevPointerEvents || 'none';
-                    widget.style.zIndex = prevZIndex || '-9999';
-                }, 300);
-
-                if (clicked) {
-                    // Transicionar a "conectado" tras un delay
-                    setTimeout(() => {
-                        if (callActive) {
-                            statusDot.className = 'dot connected';
-                            statusText.textContent = 'En llamada · LUZ IA';
-                            avatarRing.className = 'avatar-outer-ring connected';
-                            seconds = 0;
-                            timerDisplay.textContent = formatTime(0);
-                            timerInterval = setInterval(() => {
-                                seconds++;
-                                timerDisplay.textContent = formatTime(seconds);
-                            }, 1000);
-                        }
-                    }, 1800);
-                } else {
-                    // Si no se pudo hacer clic, revertir
-                    console.error('No se pudo iniciar la llamada. ¿Está el widget cargado?');
-                    resetUI();
-                }
-            }, 400);
         }
 
-        function endCall() {
-            if (!callActive) return;
-
-            // Intentar colgar en el widget
-            widget.style.pointerEvents = 'auto';
-            widget.style.zIndex = '99999';
-            setTimeout(() => {
-                clickWidgetButton();
-                setTimeout(() => {
-                    widget.style.pointerEvents = 'none';
-                    widget.style.zIndex = '-9999';
-                }, 300);
-            }, 200);
-
-            resetUI();
+        function updateUIForConnected() {
+            statusDot.className = 'dot connected';
+            statusText.textContent = 'En llamada · LUZ IA';
+            avatarRing.className = 'avatar-outer-ring connected';
+            seconds = 0;
+            timerDisplay.textContent = formatTime(0);
+            timerInterval = setInterval(() => {
+                seconds++;
+                timerDisplay.textContent = formatTime(seconds);
+            }, 1000);
         }
 
         function resetUI() {
@@ -835,7 +533,6 @@ type="text/javascript"
             clearInterval(timerInterval);
             timerInterval = null;
             seconds = 0;
-
             callBtn.className = 'btn-call call-start';
             callBtn.textContent = '📞';
             btnLabel.textContent = 'Iniciar llamada';
@@ -846,41 +543,77 @@ type="text/javascript"
             timerDisplay.textContent = '--:--';
         }
 
-        function toggleCall() {
+        async function startCall() {
+            if (callActive) return;
+            if (!client) {
+                alert('Cliente de ElevenLabs no inicializado. Revisa la API Key.');
+                return;
+            }
+
+            updateUIForCall();
+            try {
+                conversation = await client.startConversation({
+                    agentId: AGENT_ID,
+                    onConnect: () => {
+                        console.log('✅ Conectado al agente');
+                        updateUIForConnected();
+                        callActive = true;
+                    },
+                    onDisconnect: () => {
+                        console.log('🔌 Desconectado');
+                        resetUI();
+                    },
+                    onError: (error) => {
+                        console.error('❌ Error en la conversación:', error);
+                        resetUI();
+                        alert('Error en la llamada. Revisa la consola.');
+                    },
+                    // Opcional: puedes pasar variables de contexto aquí
+                    // overrides: { ... }
+                });
+            } catch (err) {
+                console.error('Error al iniciar conversación:', err);
+                resetUI();
+                alert('No se pudo iniciar la llamada. ¿Está bien la API Key?');
+            }
+        }
+
+        async function endCall() {
+            if (!callActive || !conversation) return;
+            try {
+                await conversation.end();
+            } catch (e) {
+                console.warn('Error al colgar:', e);
+            }
+            resetUI();
+        }
+
+        window.toggleCall = function() {
             if (callActive) {
                 endCall();
             } else {
                 startCall();
             }
+        };
+
+        // Inicializar el cliente de ElevenLabs
+        try {
+            if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'sk_fdc782ab040fd94ebadf797817f37a195b22218e27c4d98b') {
+                console.warn('⚠️ Debes configurar tu API Key de ElevenLabs.');
+            } else {
+                client = new ElevenLabsClient({ apiKey: ELEVENLABS_API_KEY });
+                console.log('✅ ElevenLabs Client listo');
+            }
+        } catch (e) {
+            console.error('Error al crear cliente ElevenLabs:', e);
         }
 
-        // Exponer toggleCall al scope global para el onclick inline
-        window.toggleCall = toggleCall;
-
-        // ────────────────────────────────────────
-        // INICIALIZACIÓN
-        // ────────────────────────────────────────
-        waitForWidget(10000)
-            .then(() => {
-                console.log('🚀 CAU Sermicro listo. Widget de ElevenLabs operativo.');
-                ticketCount.textContent = randomTickets();
-            })
-            .catch((err) => {
-                console.warn('⚠️ El widget de ElevenLabs no se cargó a tiempo:', err.message);
-                console.warn('👉 La llamada de voz podría no funcionar. Verifica el agent_id y la conexión.');
-                // La UI sigue funcionando, pero la llamada no se iniciará
-                ticketCount.textContent = randomTickets();
-            });
-
-        // ────────────────────────────────────────
-        // TICKET COUNTER: simulación de actividad
-        // ────────────────────────────────────────
+        // Simulación de tickets
         setInterval(() => {
             if (!callActive && Math.random() < 0.3) {
                 ticketCount.textContent = randomTickets();
             }
         }, 15000);
-    })();
-</script>
+    </script>
 </body>
 </html>
