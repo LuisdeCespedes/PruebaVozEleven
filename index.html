@@ -703,7 +703,7 @@ type="text/javascript"
                 const btn = widget.shadowRoot.querySelector(sel);
                 if (btn) return btn;
             }
-            // Si no encontramos nada, buscamos cualquier elemento clickeable
+            // Si no encontramos nada, buscamos cualquier elemento clickeablee
             const allButtons = widget.shadowRoot.querySelectorAll('button, [role="button"]');
             if (allButtons.length > 0) return allButtons[0];
             return null;
