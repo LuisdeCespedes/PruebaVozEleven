@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAU · Sermicro Soporte IT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg: #06080d;
@@ -275,7 +277,6 @@
             background: var(--subtle);
             transition: all 0.3s ease;
         }
-        /* CORREGIDO: selectores sin corchetes */
         .dot.online { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
         .dot.calling { background: var(--amber); box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); animation: blink-dot 0.8s ease-in-out infinite; }
         .dot.connected { background: var(--green); box-shadow: 0 0 10px var(--green-glow); }
@@ -343,7 +344,6 @@
             user-select: none;
         }
         .btn-call:active { transform: scale(0.94); }
-        /* CORREGIDO: selectores sin corchetes */
         .btn-call.call-start {
             background: var(--green);
             color: #000;
@@ -408,17 +408,19 @@
     </style>
 </head>
 <body>
+
     <div class="bg-particles">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
     <div class="card">
-        <span class="version-tag">v8</span>
+        <span class="version-tag">v9</span>
 
         <div class="card-header">
             <div class="card-header-left">
-                <img src="images/logo.png" alt="Sermicro" class="logo-img">
+                <img src="images/logo.png" alt="Sermicro" class="logo-img"
+                    onerror="this.outerHTML='<span style=&quot;font-weight:700;font-size:18px;letter-spacing:1px;color:var(--text)&quot;>SER<span style=&quot;color:var(--green)&quot;>MICRO</span></span>'">
             </div>
             <span class="badge-cau">CAU · N1</span>
         </div>
@@ -480,17 +482,18 @@
     </div>
 
     <script type="module">
-        import { ElevenLabsClient } from 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@latest/dist/elevenlabs-client.esm.js';
+        // ==============================================
+        // SDK OFICIAL DE ELEVENLABS (v9 con API Key)
+        // ==============================================
+        import { Conversation } from 'https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm';
 
-        const API_KEY = 'sk_fdc782ab040fd94ebadf797817f37a195b22218e27c4d98b';
         const AGENT_ID = 'agent_0701kwn0q915ew78vgnfc75bnn46';
+        const API_KEY = 'sk_fdc782ab040fd94ebadf797817f37a195b22218e27c4d98b';
 
-        let client;
-        let conversation;
+        let conversation = null;
         let callActive = false;
         let timerInterval = null;
         let seconds = 0;
-        let audioStream = null;
 
         const callBtn = document.getElementById('callBtn');
         const btnLabel = document.getElementById('btnLabel');
@@ -519,7 +522,6 @@
             statusText.textContent = 'Conectando…';
             avatarRing.className = 'avatar-outer-ring calling';
             timerDisplay.textContent = '--:--';
-            ticketCount.textContent = randomTickets();
         }
 
         function updateUIForConnected() {
@@ -550,44 +552,48 @@
             statusText.textContent = 'Agente disponible';
             avatarRing.className = 'avatar-outer-ring';
             timerDisplay.textContent = '--:--';
-            if (audioStream) {
-                audioStream.getTracks().forEach(track => track.stop());
-                audioStream = null;
-            }
         }
 
         async function startCall() {
-            if (callActive) return;
-            if (!client) {
-                alert('Error: Cliente de ElevenLabs no inicializado. Recarga la página.');
-                return;
-            }
+            if (callActive || conversation) return;
+
             updateUIForCall();
+
             try {
-                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // Pedir permiso al micrófono (necesario para WebRTC)
+                await navigator.mediaDevices.getUserMedia({ audio: true });
                 console.log('✅ Micrófono concedido');
 
-                conversation = await client.startConversation({
+                conversation = await Conversation.startSession({
                     agentId: AGENT_ID,
+                    apiKey: API_KEY,                // <-- API Key incluida
+                    connectionType: 'webrtc',
                     onConnect: () => {
                         console.log('✅ Conectado al agente');
                         updateUIForConnected();
                     },
                     onDisconnect: () => {
                         console.log('🔌 Desconectado');
+                        conversation = null;
                         resetUI();
                     },
                     onError: (error) => {
                         console.error('❌ Error en conversación:', error);
+                        conversation = null;
                         resetUI();
                         alert('Error durante la llamada. Revisa la consola.');
                     },
+                    onModeChange: (mode) => {
+                        if (!callActive) return;
+                        statusText.textContent = mode.mode === 'speaking'
+                            ? 'LUZ IA hablando…'
+                            : 'En llamada · LUZ IA';
+                    }
                 });
-
-                await conversation.startRecording(audioStream);
-                console.log('🎤 Grabación iniciada');
+                console.log('🎤 Sesión iniciada');
             } catch (err) {
                 console.error('Error al iniciar la llamada:', err);
+                conversation = null;
                 resetUI();
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     alert('Permiso de micrófono denegado. Concede el acceso al micrófono para hablar con LUZ IA.');
@@ -598,39 +604,27 @@
         }
 
         async function endCall() {
-            if (!callActive || !conversation) return;
+            if (!conversation) return;
             try {
-                if (audioStream) {
-                    audioStream.getTracks().forEach(track => track.stop());
-                    audioStream = null;
-                }
-                await conversation.end();
+                await conversation.endSession();
                 console.log('🔚 Llamada finalizada manualmente');
             } catch (e) {
                 console.warn('Error al colgar:', e);
             }
+            conversation = null;
             resetUI();
         }
 
-        function toggleCall() {
-            if (callActive) {
+        // Conectar el botónNNNNNNNNNNNNNNNNNN
+        callBtn.addEventListener('click', () => {
+            if (callActive || conversation) {
                 endCall();
             } else {
                 startCall();
             }
-        }
+        });
 
-        /* CORREGIDO: event listener añadidssssso */
-        callBtn.addEventListener('click', toggleCall);
-
-        try {
-            client = new ElevenLabsClient({ apiKey: API_KEY });
-            console.log('✅ ElevenLabs Client inicializado');
-        } catch (e) {
-            console.error('Error al crear el cliente:', e);
-            alert('No se pudo conectar con ElevenLabs. Revisa la API Key.');
-        }
-
+        // Simulación de tickets
         setInterval(() => {
             if (!callActive && Math.random() < 0.3) {
                 ticketCount.textContent = randomTickets();
