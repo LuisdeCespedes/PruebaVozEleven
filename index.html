@@ -1,454 +1,886 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAU · Sermicro Soporte IT</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAU · Sermicro Soporte IT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #06080d;
+            --surface: #0b0f17;
+            --surface2: #111620;
+            --surface3: #181d28;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-active: rgba(255, 255, 255, 0.1);
+            --green: #00e87a;
+            --green-bright: #1aff94;
+            --green-dim: rgba(0, 232, 122, 0.1);
+            --green-glow: rgba(0, 232, 122, 0.3);
+            --red: #ff3b5c;
+            --red-glow: rgba(255, 59, 92, 0.35);
+            --amber: #f59e0b;
+            --text: #eef1f7;
+            --text-secondary: #b0b8c5;
+            --muted: rgba(176, 184, 197, 0.5);
+            --subtle: rgba(176, 184, 197, 0.2);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
 
-    :root {
-      --bg: #07090f;
-      --surface: #0e1118;
-      --surface2: #141820;
-      --border: rgba(255,255,255,0.07);
-      --green: #00e87a;
-      --green-dim: rgba(0,232,122,0.12);
-      --green-glow: rgba(0,232,122,0.25);
-      --red: #ff3b5c;
-      --text: #f0f2f7;
-      --muted: rgba(240,242,247,0.4);
-      --subtle: rgba(240,242,247,0.15);
-    }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            background-image:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 232, 122, 0.025) 0%, transparent 70%),
+                radial-gradient(ellipse at 50% 80%, rgba(0, 150, 200, 0.02) 0%, transparent 60%);
+        }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(0,232,122,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
+        /* Grid sutil de fondo */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
+        /* Partículas sutiles (solo decoración) */
+        .bg-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        .bg-particles span {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: float-up 8s infinite ease-in;
+            opacity: 0;
+        }
+        .bg-particles span:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 9s;
+        }
+        .bg-particles span:nth-child(2) {
+            left: 25%;
+            animation-delay: 2s;
+            animation-duration: 11s;
+        }
+        .bg-particles span:nth-child(3) {
+            left: 40%;
+            animation-delay: 4s;
+            animation-duration: 7s;
+        }
+        .bg-particles span:nth-child(4) {
+            left: 55%;
+            animation-delay: 1s;
+            animation-duration: 10s;
+        }
+        .bg-particles span:nth-child(5) {
+            left: 70%;
+            animation-delay: 3s;
+            animation-duration: 8s;
+        }
+        .bg-particles span:nth-child(6) {
+            left: 85%;
+            animation-delay: 5s;
+            animation-duration: 12s;
+        }
+        .bg-particles span:nth-child(7) {
+            left: 15%;
+            animation-delay: 6s;
+            animation-duration: 9s;
+        }
+        .bg-particles span:nth-child(8) {
+            left: 60%;
+            animation-delay: 7s;
+            animation-duration: 11s;
+        }
 
-    .card {
-      position: relative;
-      z-index: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px 36px 36px;
-      width: 100%;
-      max-width: 380px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow:
-        0 0 0 1px rgba(0,232,122,0.04),
-        0 32px 64px rgba(0,0,0,0.6),
-        0 0 80px rgba(0,232,122,0.03);
-    }
+        @keyframes float-up {
+            0% {
+                transform: translateY(105vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
 
-    .logo-wrap {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 28px;
-    }
+        /* Tarjeta principal */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            box-shadow:
+                0 1px 0 var(--border-active) inset,
+                0 0 0 1px rgba(0, 232, 122, 0.02),
+                0 24px 64px rgba(0, 0, 0, 0.7),
+                0 0 100px rgba(0, 232, 122, 0.02);
+            overflow: hidden;
+        }
 
-    .logo-wrap img {
-      height: 28px;
-      width: auto;
-      opacity: 0.85;
-      filter: brightness(0) invert(1);
-    }
+        /* Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface2);
+        }
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: var(--text);
+            text-transform: uppercase;
+        }
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green-glow);
+            animation: logo-pulse 2s ease-in-out infinite;
+        }
+        @keyframes logo-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 6px var(--green-glow);
+            }
+            50% {
+                box-shadow: 0 0 16px var(--green), 0 0 24px var(--green-glow);
+            }
+        }
+        .badge-cau {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--green);
+            background: var(--green-dim);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 232, 122, 0.2);
+        }
 
-    .avatar-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
+        /* Cuerpo */
+        .card-body {
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px;
+        }
 
-    .avatar-ring {
-      position: relative;
-      width: 96px;
-      height: 96px;
-    }
+        /* Avatar */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .avatar-outer-ring {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-outer-ring::before,
+        .avatar-outer-ring::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 1.5px solid var(--green);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .avatar-outer-ring.calling::before {
+            animation: pulse-ring 1.8s ease-out infinite;
+            opacity: 0.5;
+        }
+        .avatar-outer-ring.calling::after {
+            animation: pulse-ring 1.8s ease-out infinite 0.5s;
+            opacity: 0.3;
+        }
+        .avatar-outer-ring.connected::before {
+            animation: breathe-ring 2.8s ease-in-out infinite;
+            opacity: 0.35;
+            inset: -6px;
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.85);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1.55);
+                opacity: 0;
+            }
+        }
+        @keyframes breathe-ring {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: scale(1.06);
+                opacity: 0.45;
+            }
+        }
+        .avatar-inner {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #151d2a 0%, #0a0f17 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        .avatar-inner .avatar-icon {
+            font-size: 2.6rem;
+            filter: grayscale(0.1);
+            position: relative;
+            z-index: 1;
+        }
+        .avatar-inner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.06), transparent 55%);
+        }
+        .agent-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            color: var(--text);
+        }
+        .agent-role {
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: -2px;
+        }
 
-    .avatar-ring::before,
-    .avatar-ring::after {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 1px solid var(--green);
-      opacity: 0;
-    }
+        /* Barra de estado */
+        .status-bar {
+            width: 100%;
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+        }
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--subtle);
+            transition: all 0.3s ease;
+        }
+        .dot.online {
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+        .dot.calling {
+            background: var(--amber);
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            animation: blink-dot 0.8s ease-in-out infinite;
+        }
+        .dot.connected {
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green-glow);
+        }
+        .dot.ended {
+            background: var(--red);
+            box-shadow: 0 0 6px var(--red-glow);
+        }
+        @keyframes blink-dot {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+        .timer-display {
+            color: var(--text-secondary);
+            font-weight: 500;
+            min-width: 38px;
+            text-align: right;
+            letter-spacing: 0.5px;
+        }
 
-    .avatar-ring.ringing::before {
-      animation: pulse-ring 2s ease-out infinite;
-    }
+        /* Info rows */
+        .info-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .info-cell {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .info-cell .info-label {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--muted);
+        }
+        .info-cell .info-value {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+        }
 
-    .avatar-ring.ringing::after {
-      animation: pulse-ring 2s ease-out infinite 0.6s;
-    }
+        /* Botón de llamada */
+        .call-btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-call {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+            position: relative;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .btn-call:active {
+            transform: scale(0.94);
+        }
+        .btn-call.call-start {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3);
+            animation: btn-glow-green 2.6s ease-in-out infinite;
+        }
+        .btn-call.call-start:hover {
+            box-shadow: 0 0 0 12px var(--green-dim), 0 14px 36px rgba(0, 232, 122, 0.45);
+            transform: scale(1.07);
+        }
+        @keyframes btn-glow-green {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 var(--green-glow), 0 10px 28px rgba(0, 232, 122, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 0 14px rgba(0, 232, 122, 0), 0 10px 28px rgba(0, 232, 122, 0.4);
+            }
+        }
+        .btn-call.call-end {
+            background: var(--red);
+            color: #fff;
+            box-shadow: 0 10px 28px var(--red-glow);
+            animation: none;
+        }
+        .btn-call.call-end:hover {
+            box-shadow: 0 14px 36px rgba(255, 59, 92, 0.5);
+            transform: scale(1.07);
+        }
+        .btn-label {
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.3s;
+        }
+        .btn-label.active {
+            color: var(--red);
+        }
 
-    .avatar-ring.connected::before {
-      animation: breathe 2.5s ease-in-out infinite;
-      opacity: 0.3;
-      inset: -4px;
-    }
+        /* Footer */
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        .card-footer p {
+            font-size: 0.62rem;
+            color: var(--subtle);
+            letter-spacing: 0.6px;
+            line-height: 1.7;
+        }
+        .card-footer .footer-brand {
+            color: var(--muted);
+            font-weight: 500;
+        }
 
-    @keyframes pulse-ring {
-      0% { transform: scale(0.9); opacity: 0.6; }
-      100% { transform: scale(1.5); opacity: 0; }
-    }
+        /* ---- Widget de ElevenLabs: oculto pero funcional ---- */
+        #elWidget {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 1px !important;
+            height: 1px !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            clip-path: inset(50%) !important;
+            z-index: -9999 !important;
+            border: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+            /* no usamos display:none para que el navegador lo mantenga "vivo" y el audio funcione */
+        }
 
-    @keyframes breathe {
-      0%, 100% { opacity: 0.15; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.05); }
-    }
-
-    .avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1a2235 0%, #0e1520 100%);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .avatar::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), transparent 60%);
-    }
-
-    .agent-name {
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
-
-    .agent-role {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: 2px;
-      text-align: center;
-    }
-
-    .status-bar {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--muted);
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--subtle);
-      flex-shrink: 0;
-    }
-
-    .dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .dot.calling { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 1s ease-in-out infinite; }
-    .dot.connected { background: var(--green); box-shadow: 0 0 8px var(--green); }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .timer {
-      color: var(--muted);
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      min-width: 40px;
-      text-align: right;
-    }
-
-    .info-row {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      color: var(--muted);
-      padding: 0 2px;
-    }
-
-    .info-item span:last-child {
-      color: var(--subtle);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .btn-call {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      transition: all 0.2s ease;
-      position: relative;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .btn-call.call-start {
-      background: var(--green);
-      box-shadow: 0 0 0 0 var(--green-glow), 0 8px 24px rgba(0,232,122,0.3);
-      animation: call-pulse 2.5s ease-in-out infinite;
-    }
-
-    .btn-call.call-start:hover {
-      transform: scale(1.06);
-      box-shadow: 0 0 0 8px var(--green-dim), 0 12px 32px rgba(0,232,122,0.4);
-    }
-
-    .btn-call.call-end {
-      background: var(--red);
-      box-shadow: 0 8px 24px rgba(255,59,92,0.3);
-      animation: none;
-    }
-
-    .btn-call.call-end:hover {
-      transform: scale(1.06);
-      box-shadow: 0 12px 32px rgba(255,59,92,0.4);
-    }
-
-    @keyframes call-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 var(--green-glow), 0 8px 24px rgba(0,232,122,0.3); }
-      50% { box-shadow: 0 0 0 10px rgba(0,232,122,0), 0 8px 24px rgba(0,232,122,0.3); }
-    }
-
-    .btn-label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      margin: 24px 0 16px;
-    }
-
-    .footer-note {
-      font-size: 0.65rem;
-      color: var(--subtle);
-      text-align: center;
-      letter-spacing: 0.5px;
-      line-height: 1.6;
-    }
-
-    elevenlabs-convai {
-      position: fixed !important;
-      bottom: -9999px !important;
-      right: -9999px !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-  </style>
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card {
+                max-width: 100%;
+                border-radius: 14px;
+            }
+            .card-body {
+                padding: 20px 16px;
+                gap: 16px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn-call {
+                width: 62px;
+                height: 62px;
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card">
-
-    <div class="logo-wrap">
-      <img src="images/logo.png" alt="Sermicro">
+    <!-- Partículas decorativas de fondo -->
+    <div class="bg-particles">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
     </div>
 
-    <div class="avatar-section">
-      <div class="avatar-ring" id="avatarRing">
-        <div class="avatar">🎧</div>
-      </div>
-      <div>
-	<div class="agent-name">LUZ IA</div>
-	<div class="agent-role">Asistente CAU · Soporte IT</div>
-      </div>
+    <!-- Tarjeta principal del CAU -->
+    <div class="card">
+
+        <!-- Header -->
+        <div class="card-header">
+            <div class="card-header-left">
+                <span class="logo-text">SERMICRO</span>
+                <span class="logo-dot"></span>
+            </div>
+            <span class="badge-cau">CAU · N1</span>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="card-body">
+
+            <!-- Avatar -->
+            <div class="avatar-section">
+                <div class="avatar-outer-ring" id="avatarRing">
+                    <div class="avatar-inner">
+                        <span class="avatar-icon">🎧</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="agent-name">LUZ IA</div>
+                    <div class="agent-role">Asistente CAU · Soporte IT</div>
+                </div>
+            </div>
+
+            <!-- Barra de estado -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span class="dot online" id="statusDot"></span>
+                    <span id="statusText">Agente disponible</span>
+                </div>
+                <span class="timer-display" id="timerDisplay">--:--</span>
+            </div>
+
+            <!-- Info grid -->
+            <div class="info-grid">
+                <div class="info-cell">
+                    <span class="info-label">Departamento</span>
+                    <span class="info-value">CAU · N1</span>
+                </div>
+                <div class="info-cell">
+                    <span class="info-label">Cobertura</span>
+                    <span class="info-value">ES · 24/7</span>
+                </div>
+                <div class="info-cell">
+                    <span class="info-label">Idioma</span>
+                    <span class="info-value">Castellano</span>
+                </div>
+                <div class="info-cell">
+                    <span class="info-label">Tickets hoy</span>
+                    <span class="info-value" id="ticketCount">47</span>
+                </div>
+            </div>
+
+            <!-- Botón de llamada -->
+            <div class="call-btn-wrapper">
+                <button
+                class="btn-call call-start"
+                id="callBtn"
+                onclick="toggleCall()"
+                title="Iniciar llamada con LUZ IA"
+                aria-label="Iniciar llamada"
+            >
+            📞
+        </button>
+        <span class="btn-label" id="btnLabel">Iniciar llamada</span>
     </div>
 
-    <div class="status-bar">
-      <div class="status-indicator">
-        <div class="dot online" id="statusDot"></div>
-        <span id="statusText">Disponible</span>
-      </div>
-      <div class="timer" id="timer">--:--</div>
-    </div>
+</div>
 
-    <div class="info-row">
-      <div class="info-item">
-        <span>Departamento</span>
-        <span>CAU · N1</span>
-      </div>
-      <div class="info-item">
-        <span>Cobertura</span>
-        <span>ES · 24/7</span>
-      </div>
-      <div class="info-item">
-        <span>Idioma</span>
-        <span>Castellano</span>
-      </div>
-    </div>
-
-    <button class="btn-call call-start" id="callBtn" onclick="toggleCall()">
-      📞
-    </button>
-    <span class="btn-label" id="btnLabel">Iniciar llamada</span>
-
-    <div class="divider"></div>
-
-    <p class="footer-note">
-      Tu llamada puede ser grabada con fines de calidad.<br>
-      Powered by Sermicro AI · sermicro.com
+<!-- Footer -->
+<div class="card-footer">
+    <p>
+        Tu llamada puede ser grabada con fines de calidad.<br>
+        <span class="footer-brand">Powered by Sermicro AI</span> · sermicro.com
     </p>
+</div>
+</div>
 
-  </div>
+<!-- ============================================ -->
+<!-- WIDGET DE ELEVENLABS (oculto, solo funcional) -->
+<!-- ============================================ -->
+<elevenlabs-convai
+agent-id="agent_0701kwn0q915ew78vgnfc75bnn46"
+id="elWidget"
+></elevenlabs-convai>
+<script
+src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+async
+type="text/javascript"
+></script>
 
-  <elevenlabs-convai agent-id="agent_0701kwn0q915ew78vgnfc75bnn46" id="elWidget"></elevenlabs-convai>
-  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+<script>
+    (function() {
+        // ────────────────────────────────────────
+        // ESTADO
+        // ────────────────────────────────────────
+        let callActive = false;
+        let timerInterval = null;
+        let seconds = 0;
+        let widgetReady = false;
 
-  <script>
-    let callActive = false;
-    let timerInterval = null;
-    let seconds = 0;
+        // ────────────────────────────────────────
+        // REFERENCIAS AL DOM
+        // ────────────────────────────────────────
+        const callBtn = document.getElementById('callBtn');
+        const btnLabel = document.getElementById('btnLabel');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const avatarRing = document.getElementById('avatarRing');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const ticketCount = document.getElementById('ticketCount');
+        const widget = document.getElementById('elWidget');
 
-    function formatTime(s) {
-      const m = Math.floor(s / 60).toString().padStart(2, '0');
-      const sc = (s % 60).toString().padStart(2, '0');
-      return m + ':' + sc;
-    }
+        // ────────────────────────────────────────
+        // UTILIDADES
+        // ────────────────────────────────────────
+        function formatTime(s) {
+            const m = Math.floor(s / 60).toString().padStart(2, '0');
+            const sc = (s % 60).toString().padStart(2, '0');
+            return m + ':' + sc;
+        }
 
-    function toggleCall() {
-      const btn = document.getElementById('callBtn');
-      const label = document.getElementById('btnLabel');
-      const dot = document.getElementById('statusDot');
-      const statusText = document.getElementById('statusText');
-      const ring = document.getElementById('avatarRing');
-      const timer = document.getElementById('timer');
-      const widget = document.getElementById('elWidget');
+        function randomTickets() {
+            return Math.floor(Math.random() * 30) + 30;
+        }
 
-      if (!callActive) {
-        callActive = true;
-        btn.className = 'btn-call call-end';
-        btn.textContent = '📵';
-        label.textContent = 'Colgar';
-        dot.className = 'dot calling';
-        statusText.textContent = 'Conectando…';
-        ring.className = 'avatar-ring ringing';
+        /**
+         * Busca el botón dentro del shadow DOM del widget.
+         * El widget de ElevenLabs suele tener un <button> en su shadow root.
+         * Intentamos varios selectores para ser robustos.
+         */
+        function findWidgetButton() {
+            if (!widget || !widget.shadowRoot) return null;
+            // Intentamos selectores comunes
+            const selectors = [
+                'button',
+                '[role="button"]',
+                '.start-call-btn',
+                '[data-testid="call-button"]',
+                'button[aria-label]',
+            ];
+            for (const sel of selectors) {
+                const btn = widget.shadowRoot.querySelector(sel);
+                if (btn) return btn;
+            }
+            // Si no encontramos nada, buscamos cualquier elemento clickeable
+            const allButtons = widget.shadowRoot.querySelectorAll('button, [role="button"]');
+            if (allButtons.length > 0) return allButtons[0];
+            return null;
+        }
 
-        widget.style.pointerEvents = 'auto';
+        /**
+         * Hace clic en el botón interno del widget para iniciar/terminar la llamada.
+         * Retorna true si pudo hacer clic, false si no.
+         */
+        function clickWidgetButton() {
+            const btn = findWidgetButton();
+            if (btn) {
+                btn.click();
+                console.log('✅ Clic en botón del widget de ElevenLabs');
+                return true;
+            }
+            console.warn('⚠️ No se encontró el botón del widget en el shadow DOM');
+            return false;
+        }
 
-        setTimeout(() => {
-          try {
-            const shadowBtn = widget.shadowRoot && widget.shadowRoot.querySelector('button');
-            if (shadowBtn) shadowBtn.click();
-          } catch(e) {}
-          dot.className = 'dot connected';
-          statusText.textContent = 'En llamada';
-          ring.className = 'avatar-ring connected';
-          seconds = 0;
-          timerInterval = setInterval(function() {
-            seconds++;
-            timer.textContent = formatTime(seconds);
-          }, 1000);
-        }, 1200);
+        /**
+         * Espera a que el widget esté listo (custom element definido y shadow DOM accesible).
+         */
+        function waitForWidget(timeoutMs = 8000) {
+            return new Promise((resolve, reject) => {
+                const startTime = Date.now();
 
-      } else {
-        callActive = false;
-        btn.className = 'btn-call call-start';
-        btn.textContent = '📞';
-        label.textContent = 'Iniciar llamada';
-        dot.className = 'dot online';
-        statusText.textContent = 'Disponible';
-        ring.className = 'avatar-ring';
-        timer.textContent = '--:--';
-        clearInterval(timerInterval);
-        widget.style.pointerEvents = 'none';
+                function check() {
+                    // ¿Está definido el custom element?
+                    if (!customElements.get('elevenlabs-convai') && Date.now() - startTime < timeoutMs) {
+                        setTimeout(check, 200);
+                        return;
+                    }
+                    // ¿Tiene shadowRoot?
+                    if (widget && widget.shadowRoot) {
+                        widgetReady = true;
+                        console.log('✅ Widget de ElevenLabs listo');
+                        resolve(true);
+                        return;
+                    }
+                    if (Date.now() - startTime >= timeoutMs) {
+                        console.warn('⚠️ Timeout esperando al widget de ElevenLabs');
+                        reject(new Error('Timeout esperando al widget'));
+                        return;
+                    }
+                    setTimeout(check, 200);
+                }
+                check();
+            });
+        }
 
-        try {
-          const shadowBtn = widget.shadowRoot && widget.shadowRoot.querySelector('button');
-          if (shadowBtn) shadowBtn.click();
-        } catch(e) {}
-      }
-    }
-  </script>
+        // ────────────────────────────────────────
+        // INICIAR / TERMINAR LLAMADA
+        // ────────────────────────────────────────
+        function startCall() {
+            if (callActive) return;
 
+            callActive = true;
+
+            // Actualizar UI a estado "conectando"
+            callBtn.className = 'btn-call call-end';
+            callBtn.textContent = '📵';
+            btnLabel.textContent = 'Colgar llamada';
+            btnLabel.classList.add('active');
+            statusDot.className = 'dot calling';
+            statusText.textContent = 'Conectando…';
+            avatarRing.className = 'avatar-outer-ring calling';
+            timerDisplay.textContent = '--:--';
+            ticketCount.textContent = randomTickets();
+
+            // Permitir interacción con el widget momentáneamente para el clic
+            const prevPointerEvents = widget.style.pointerEvents;
+            const prevZIndex = widget.style.zIndex;
+            widget.style.pointerEvents = 'auto';
+            widget.style.zIndex = '99999';
+
+            // Pequeño delay para que el widget procese
+            setTimeout(() => {
+                const clicked = clickWidgetButton();
+
+                // Restaurar ocultación del widget
+                setTimeout(() => {
+                    widget.style.pointerEvents = prevPointerEvents || 'none';
+                    widget.style.zIndex = prevZIndex || '-9999';
+                }, 300);
+
+                if (clicked) {
+                    // Transicionar a "conectado" tras un delay
+                    setTimeout(() => {
+                        if (callActive) {
+                            statusDot.className = 'dot connected';
+                            statusText.textContent = 'En llamada · LUZ IA';
+                            avatarRing.className = 'avatar-outer-ring connected';
+                            seconds = 0;
+                            timerDisplay.textContent = formatTime(0);
+                            timerInterval = setInterval(() => {
+                                seconds++;
+                                timerDisplay.textContent = formatTime(seconds);
+                            }, 1000);
+                        }
+                    }, 1800);
+                } else {
+                    // Si no se pudo hacer clic, revertir
+                    console.error('No se pudo iniciar la llamada. ¿Está el widget cargado?');
+                    resetUI();
+                }
+            }, 400);
+        }
+
+        function endCall() {
+            if (!callActive) return;
+
+            // Intentar colgar en el widget
+            widget.style.pointerEvents = 'auto';
+            widget.style.zIndex = '99999';
+            setTimeout(() => {
+                clickWidgetButton();
+                setTimeout(() => {
+                    widget.style.pointerEvents = 'none';
+                    widget.style.zIndex = '-9999';
+                }, 300);
+            }, 200);
+
+            resetUI();
+        }
+
+        function resetUI() {
+            callActive = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            seconds = 0;
+
+            callBtn.className = 'btn-call call-start';
+            callBtn.textContent = '📞';
+            btnLabel.textContent = 'Iniciar llamada';
+            btnLabel.classList.remove('active');
+            statusDot.className = 'dot online';
+            statusText.textContent = 'Agente disponible';
+            avatarRing.className = 'avatar-outer-ring';
+            timerDisplay.textContent = '--:--';
+        }
+
+        function toggleCall() {
+            if (callActive) {
+                endCall();
+            } else {
+                startCall();
+            }
+        }
+
+        // Exponer toggleCall al scope global para el onclick inline
+        window.toggleCall = toggleCall;
+
+        // ────────────────────────────────────────
+        // INICIALIZACIÓN
+        // ────────────────────────────────────────
+        waitForWidget(10000)
+            .then(() => {
+                console.log('🚀 CAU Sermicro listo. Widget de ElevenLabs operativo.');
+                ticketCount.textContent = randomTickets();
+            })
+            .catch((err) => {
+                console.warn('⚠️ El widget de ElevenLabs no se cargó a tiempo:', err.message);
+                console.warn('👉 La llamada de voz podría no funcionar. Verifica el agent_id y la conexión.');
+                // La UI sigue funcionando, pero la llamada no se iniciará
+                ticketCount.textContent = randomTickets();
+            });
+
+        // ────────────────────────────────────────
+        // TICKET COUNTER: simulación de actividad
+        // ────────────────────────────────────────
+        setInterval(() => {
+            if (!callActive && Math.random() < 0.3) {
+                ticketCount.textContent = randomTickets();
+            }
+        }, 15000);
+    })();
+</script>
 </body>
 </html>
