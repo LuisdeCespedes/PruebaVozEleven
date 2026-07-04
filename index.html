@@ -417,7 +417,7 @@
     </div>
 
     <div class="card">
-        <span class="version-tag">v5</span>
+        <span class="version-tag">v6</span>
 
         <div class="card-header">
             <div class="card-header-left">
@@ -559,7 +559,6 @@
             statusText.textContent = 'Agente disponible';
             avatarRing.className = 'avatar-outer-ring';
             timerDisplay.textContent = '--:--';
-            // Detener el stream de audio si sigue activo
             if (audioStream) {
                 audioStream.getTracks().forEach(track => track.stop());
                 audioStream = null;
@@ -577,11 +576,9 @@
             updateUIForCall();
 
             try {
-                // Obtener acceso al micrófono
                 audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 console.log('✅ Micrófono concedido');
 
-                // Iniciar conversación con el agente
                 conversation = await client.startConversation({
                     agentId: AGENT_ID,
                     onConnect: () => {
@@ -597,10 +594,8 @@
                         resetUI();
                         alert('Error durante la llamada. Revisa la consola.');
                     },
-                    // No necesitamos pasar stream aquí; el SDK lo maneja con grabación aparte.
                 });
 
-                // Iniciar la grabación desde el micrófono hacia el agente
                 await conversation.startRecording(audioStream);
                 console.log('🎤 Grabación iniciada');
             } catch (err) {
@@ -630,16 +625,16 @@
             resetUI();
         }
 
-        // Exponer toggleCall al scope global
-        window.toggleCall = function() {
+        // ***** CORRECCIÓN PRINCIPAL: Vinculamos el evento click directamente al botón *****
+        callBtn.addEventListener('click', () => {
             if (callActive) {
                 endCall();
             } else {
                 startCall();
             }
-        };
+        });
 
-        // Inicializar el cliente de ElevenLabsSS
+        // Inicializar el cliente de ElevenLabs
         try {
             client = new ElevenLabsClient({ apiKey: API_KEY });
             console.log('✅ ElevenLabs Client inicializado');
