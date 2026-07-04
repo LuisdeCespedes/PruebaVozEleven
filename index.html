@@ -558,7 +558,7 @@
                     if (typeof widget.startCall === 'function') {
                         widget.startCall();
                     } else {
-                        // Fallback: intentar clic en el botón del shadow DOM
+                        // Fallback: intentar clic en el botón del shadow DOMm
                         const shadowBtn = widget.shadowRoot && widget.shadowRoot.querySelector('button');
                         if (shadowBtn) shadowBtn.click();
                         else throw new Error('No se puede iniciar llamada');
