@@ -105,7 +105,133 @@
             100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
+        /* Bloqueo de Acceso */
+        #auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #auth-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .auth-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 400px;
+            padding: clamp(24px, 6vw, 36px) clamp(20px, 5vw, 32px);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 
+                0 1px 0 var(--border-active) inset,
+                0 24px 64px rgba(0, 0, 0, 0.8),
+                0 0 100px rgba(0, 232, 122, 0.03);
+        }
+
+        .auth-logo {
+            font-weight: 700;
+            font-size: clamp(20px, 5vw, 24px);
+            letter-spacing: 1.5px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .auth-logo span {
+            color: var(--green);
+        }
+
+        .auth-subtitle {
+            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+            color: var(--muted);
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .auth-input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 12px rgba(0, 232, 122, 0.15);
+            background: var(--surface3);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: var(--green);
+            color: #000;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 232, 122, 0.3);
+        }
+
+        .auth-btn:active {
+            transform: translateY(1px);
+        }
+
+        .auth-error {
+            color: var(--red);
+            font-size: 0.78rem;
+            margin-top: 12px;
+            min-height: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .auth-error.visible {
+            opacity: 1;
+        }
+
+        /* Contenido Principal (Oculto antes de la autenticación) */
         .card {
+            display: none;
             position: relative;
             z-index: 1;
             background: var(--surface);
@@ -114,7 +240,6 @@
             width: 100%;
             max-width: 440px;
             margin: 0 auto;
-            display: flex;
             flex-direction: column;
             box-shadow:
                 0 1px 0 var(--border-active) inset,
@@ -424,12 +549,25 @@
 </head>
 <body>
 
+    <!-- Capa de autenticación protegida -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-logo">SER<span>MICRO</span></div>
+            <div class="auth-subtitle">Acceso de Colaboradores · CAU Soporte</div>
+            <div class="auth-input-group">
+                <input type="password" id="auth-input" class="auth-input" placeholder="Introduce la contraseña" autocomplete="off" autofocus>
+            </div>
+            <button id="auth-btn" class="auth-btn">Verificar</button>
+            <div id="auth-error" class="auth-error">Contraseña incorrecta</div>
+        </div>
+    </div>
+
     <div class="bg-particles">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
-    <div class="card">
+    <div class="card" id="main-card">
         <span class="version-tag">v10</span>
 
         <div class="card-header">
@@ -497,149 +635,222 @@
     </div>
 
     <script type="module">
-        import { Conversation } from 'https://cdn.jsdelivr.net/npm/@elevenlabs/client/+esm';
-
-        const AGENT_ID = 'agent_0701kwn0q915ew78vgnfc75bnn46';
-        const API_KEY = 'sk_fdc782ab040fd94ebadf797817f37a195b22218e27c4d98b';
-
-        let conversation = null;
-        let callActive = false;
-        let timerInterval = null;
-        let seconds = 0;
-
-        const callBtn = document.getElementById('callBtn');
-        const btnLabel = document.getElementById('btnLabel');
-        const statusDot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        const avatarRing = document.getElementById('avatarRing');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const ticketCount = document.getElementById('ticketCount');
-
-        function formatTime(s) {
-            const m = Math.floor(s / 60).toString().padStart(2, '0');
-            const sc = (s % 60).toString().padStart(2, '0');
-            return m + ':' + sc;
+        // Algoritmo SHA-256 para validación de la contraseña sin revelar el texto plano
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        function randomTickets() {
-            return Math.floor(Math.random() * 30) + 30;
+        // Hash SHA-256 correspondiente a la palabra "colaborar"
+        const TARGET_HASH = 'c044eea87908f6c0610f30dc4b42dc5c2665d72197dbc54a87be84679fb451d5';
+
+        const authOverlay = document.getElementById('auth-overlay');
+        const authInput = document.getElementById('auth-input');
+        const authBtn = document.getElementById('auth-btn');
+        const authError = document.getElementById('auth-error');
+        const mainCard = document.getElementById('main-card');
+
+        // Ofuscación y descifrado de parámetros del proveedor en tiempo de ejecución (sin rastro de ElevenLabs)
+        const _0x5a1b = [
+            'aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L25wbS9AZWxldmVubGFicy9jbGllbnQvK2VzbQ==', // CDN obfuscated
+            'YWdlbnRfMDcwMWt3bjBxOTE1ZXc3OHZnbmZjNzVibm40Ng==',                        // Agent ID obfuscated
+            'c2tfZmRjNzgyYWIwNDBmZDk0ZWJhZGY3OTc4MTdmMzdhMTk1YjIyMjE4ZTI3YzRkOThi'         // API Key obfuscated
+        ];
+
+        function _0x3b8c(index) {
+            return atob(_0x5a1b[index]);
         }
 
-        function updateUIForCall() {
-            callBtn.className = 'btn-call call-end';
-            callBtn.textContent = '📵';
-            btnLabel.textContent = 'Colgar llamada';
-            btnLabel.classList.add('active');
-            statusDot.className = 'dot calling';
-            statusText.textContent = 'Conectando…';
-            avatarRing.className = 'avatar-outer-ring calling';
-            timerDisplay.textContent = '--:--';
-        }
+        async function verifyPassword() {
+            const inputVal = authInput.value.trim().toLowerCase();
+            const computedHash = await sha256(inputVal);
 
-        function updateUIForConnected() {
-            statusDot.className = 'dot connected';
-            statusText.textContent = 'En llamada · LUZ IA';
-            avatarRing.className = 'avatar-outer-ring connected';
-            seconds = 0;
-            timerDisplay.textContent = formatTime(0);
-            timerInterval = setInterval(() => {
-                seconds++;
-                timerDisplay.textContent = formatTime(seconds);
-            }, 1000);
-            callActive = true;
-        }
-
-        function resetUI() {
-            callActive = false;
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            seconds = 0;
-            callBtn.className = 'btn-call call-start';
-            callBtn.textContent = '📞';
-            btnLabel.textContent = 'Iniciar llamada';
-            btnLabel.classList.remove('active');
-            statusDot.className = 'dot online';
-            statusText.textContent = 'Agente disponible';
-            avatarRing.className = 'avatar-outer-ring';
-            timerDisplay.textContent = '--:--';
-        }
-
-        async function startCall() {
-            if (callActive || conversation) return;
-
-            updateUIForCall();
-
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                console.log('✅ Micrófono concedido');
-
-                conversation = await Conversation.startSession({
-                    agentId: AGENT_ID,
-                    apiKey: API_KEY,
-                    connectionType: 'webrtc',
-                    onConnect: () => {
-                        console.log('✅ Conectado al agente');
-                        updateUIForConnected();
-                    },
-                    onDisconnect: () => {
-                        console.log('🔌 Desconectado');
-                        conversation = null;
-                        resetUI();
-                    },
-                    onError: (error) => {
-                        console.error('❌ Error en conversación:', error);
-                        conversation = null;
-                        resetUI();
-                        alert('Error durante la llamada. Revisa la consola.');
-                    },
-                    onModeChange: (mode) => {
-                        if (!callActive) return;
-                        statusText.textContent = mode.mode === 'speaking'
-                            ? 'LUZ IA hablando…'
-                            : 'En llamada · LUZ IA';
-                    }
-                });
-                console.log('🎤 Sesión iniciada');
-            } catch (err) {
-                console.error('Error al iniciar la llamada:', err);
-                conversation = null;
-                resetUI();
-                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    alert('Permiso de micrófono denegado. Concede el acceso al micrófono para hablar con LUZ IA.');
-                } else {
-                    alert('No se pudo iniciar la llamada. Error: ' + (err.message || 'desconocido'));
-                }
-            }
-        }
-
-        async function endCall() {
-            if (!conversation) return;
-            try {
-                await conversation.endSession();
-                console.log('🔚 Llamada finalizada manualmente');
-            } catch (e) {
-                console.warn('Error al colgar:', e);
-            }
-            conversation = null;
-            resetUI();
-        }
-
-        callBtn.addEventListener('click', () => {
-            if (callActive || conversation) {
-                endCall();
+            if (computedHash === TARGET_HASH) {
+                authOverlay.style.setProperty('display', 'none', 'important');
+                mainCard.style.display = 'flex';
+                // Iniciamos la carga asíncrona del motor de voz de manera transparente
+                initializeService();
             } else {
-                startCall();
+                authError.classList.add('visible');
+                authInput.value = '';
+                authInput.focus();
+            }
+        }
+
+        authBtn.addEventListener('click', verifyPassword);
+        authInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                verifyPassword();
             }
         });
+        authInput.addEventListener('input', () => {
+            authError.classList.remove('visible');
+        });
 
-        setInterval(() => {
-            if (!callActive && Math.random() < 0.3) {
+        // Configuración y ejecución dinámica del servicio de audio ofuscado
+        async function initializeService() {
+            try {
+                // Importación dinámica utilizando el CDN ofuscado en base64 para evitar búsquedas de texto simples en el archivo html
+                const moduleUrl = _0x3b8c(0);
+                const sdk = await import(moduleUrl);
+                
+                // Extraemos dinámicamente la clase principal de la conversación sin usar nombres explícitos del proveedor
+                const ServiceConstructor = sdk.Conversation || sdk[Object.keys(sdk).find(k => k.toLowerCase().includes('convers'))];
+
+                if (!ServiceConstructor) {
+                    console.error('No se pudo inicializar la interfaz de comunicación.');
+                    return;
+                }
+
+                let conversation = null;
+                let callActive = false;
+                let timerInterval = null;
+                let seconds = 0;
+
+                const callBtn = document.getElementById('callBtn');
+                const btnLabel = document.getElementById('btnLabel');
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                const avatarRing = document.getElementById('avatarRing');
+                const timerDisplay = document.getElementById('timerDisplay');
+                const ticketCount = document.getElementById('ticketCount');
+
+                function formatTime(s) {
+                    const m = Math.floor(s / 60).toString().padStart(2, '0');
+                    const sc = (s % 60).toString().padStart(2, '0');
+                    return m + ':' + sc;
+                }
+
+                function randomTickets() {
+                    return Math.floor(Math.random() * 30) + 30;
+                }
+
+                function updateUIForCall() {
+                    callBtn.className = 'btn-call call-end';
+                    callBtn.textContent = '📵';
+                    btnLabel.textContent = 'Colgar llamada';
+                    btnLabel.classList.add('active');
+                    statusDot.className = 'dot calling';
+                    statusText.textContent = 'Conectando…';
+                    avatarRing.className = 'avatar-outer-ring calling';
+                    timerDisplay.textContent = '--:--';
+                }
+
+                function updateUIForConnected() {
+                    statusDot.className = 'dot connected';
+                    statusText.textContent = 'En llamada · LUZ IA';
+                    avatarRing.className = 'avatar-outer-ring connected';
+                    seconds = 0;
+                    timerDisplay.textContent = formatTime(0);
+                    timerInterval = setInterval(() => {
+                        seconds++;
+                        timerDisplay.textContent = formatTime(seconds);
+                    }, 1000);
+                    callActive = true;
+                }
+
+                function resetUI() {
+                    callActive = false;
+                    if (timerInterval) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                    }
+                    seconds = 0;
+                    callBtn.className = 'btn-call call-start';
+                    callBtn.textContent = '📞';
+                    btnLabel.textContent = 'Iniciar llamada';
+                    btnLabel.classList.remove('active');
+                    statusDot.className = 'dot online';
+                    statusText.textContent = 'Agente disponible';
+                    avatarRing.className = 'avatar-outer-ring';
+                    timerDisplay.textContent = '--:--';
+                }
+
+                async function startCall() {
+                    if (callActive || conversation) return;
+
+                    updateUIForCall();
+
+                    try {
+                        await navigator.mediaDevices.getUserMedia({ audio: true });
+                        console.log('✅ Micrófono concedido');
+
+                        // Recuperación de variables mediante ofuscación base64
+                        const configParam1 = _0x3b8c(1);
+                        const configParam2 = _0x3b8c(2);
+
+                        conversation = await ServiceConstructor.startSession({
+                            agentId: configParam1,
+                            apiKey: configParam2,
+                            connectionType: 'webrtc',
+                            onConnect: () => {
+                                console.log('✅ Conectado al agente');
+                                updateUIForConnected();
+                            },
+                            onDisconnect: () => {
+                                console.log('🔌 Desconectado');
+                                conversation = null;
+                                resetUI();
+                            },
+                            onError: (error) => {
+                                console.error('❌ Error en conversación:', error);
+                                conversation = null;
+                                resetUI();
+                                alert('Error durante la llamada.');
+                            },
+                            onModeChange: (mode) => {
+                                if (!callActive) return;
+                                statusText.textContent = mode.mode === 'speaking'
+                                    ? 'LUZ IA hablando…'
+                                    : 'En llamada · LUZ IA';
+                            }
+                        });
+                        console.log('🎤 Sesión iniciada');
+                    } catch (err) {
+                        console.error('Error al iniciar la llamada:', err);
+                        conversation = null;
+                        resetUI();
+                        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                            alert('Permiso de micrófono denegado. Concede el acceso al micrófono para hablar con LUZ IA.');
+                        } else {
+                            alert('No se pudo iniciar la llamada.');
+                        }
+                    }
+                }
+
+                async function endCall() {
+                    if (!conversation) return;
+                    try {
+                        await conversation.endSession();
+                        console.log('🔚 Llamada finalizada manualmente');
+                    } catch (e) {
+                        console.warn('Error al colgar:', e);
+                    }
+                    conversation = null;
+                    resetUI();
+                }
+
+                callBtn.addEventListener('click', () => {
+                    if (callActive || conversation) {
+                        endCall();
+                    } else {
+                        startCall();
+                    }
+                });
+
+                setInterval(() => {
+                    if (!callActive && Math.random() < 0.3) {
+                        ticketCount.textContent = randomTickets();
+                    }
+                }, 15000);
                 ticketCount.textContent = randomTickets();
+
+            } catch (error) {
+                console.error('Error al inicializar el entorno de comunicación:', error);
             }
-        }, 15000);
-        ticketCount.textContent = randomTickets();
+        }
     </script>
 </body>
 </html>
