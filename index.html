@@ -586,7 +586,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="agent-name">LUZ IA</div>
+                    <div class="agent-name">Julia</div>
                     <div class="agent-role">Asistente CAU · Soporte IT</div>
                 </div>
             </div>
@@ -619,7 +619,7 @@
             </div>
 
             <div class="call-btn-wrapper">
-                <button class="btn-call call-start" id="callBtn" title="Iniciar llamada con LUZ IA" aria-label="Iniciar llamada">
+                <button class="btn-call call-start" id="callBtn" title="Iniciar llamada con Julia" aria-label="Iniciar llamada">
                     📞
                 </button>
                 <span class="btn-label" id="btnLabel">Iniciar llamada</span>
@@ -740,7 +740,7 @@
 
                 function updateUIForConnected() {
                     statusDot.className = 'dot connected';
-                    statusText.textContent = 'En llamada · LUZ IA';
+                    statusText.textContent = 'En llamada · Julia';
                     avatarRing.className = 'avatar-outer-ring connected';
                     seconds = 0;
                     timerDisplay.textContent = formatTime(0);
@@ -803,8 +803,8 @@
                             onModeChange: (mode) => {
                                 if (!callActive) return;
                                 statusText.textContent = mode.mode === 'speaking'
-                                    ? 'LUZ IA hablando…'
-                                    : 'En llamada · LUZ IA';
+                                    ? 'Julia hablando…'
+                                    : 'En llamada · Julia';
                             }
                         });
                         console.log('🎤 Sesión iniciada');
@@ -813,7 +813,7 @@
                         conversation = null;
                         resetUI();
                         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                            alert('Permiso de micrófono denegado. Concede el acceso al micrófono para hablar con LUZ IA.');
+                            alert('Permiso de micrófono denegado. Concede el acceso al micrófono para hablar con Julia.');
                         } else {
                             alert('No se pudo iniciar la llamada.');
                         }
